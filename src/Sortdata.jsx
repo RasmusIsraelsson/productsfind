@@ -1,3 +1,11 @@
+/*
+//////
+//
+Trying to find all the cases and sort data correctly
+//
+//////
+*/
+
 export default function sortData(data) {
   const ORDINARY_PRODUCT_OFFER = data[0];
 

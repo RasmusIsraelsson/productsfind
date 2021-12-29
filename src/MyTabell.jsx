@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -12,12 +11,13 @@ import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import sortData from './Sortdata';
 
+// USE MEMO
 function useQuery() {
   const { search } = useLocation();
 
   return React.useMemo(() => new URLSearchParams(search), [search]);
 }
-
+// STYLING
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -27,7 +27,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontSize: 14,
   },
 }));
-
+// STYLING
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover,
@@ -37,15 +37,12 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
-
+// DATA 
 function MyTabell() {
   const query = useQuery();
 
   const [products, setProduct] = useState([]);
 
-  ////
-
-  //
 
   useEffect(() => {
     axios
@@ -62,12 +59,7 @@ function MyTabell() {
         console.log('err', err);
       });
   }, []);
-
-  ////
-
-  //
-
-  //
+ // MY TABELL ON THE SCREEN
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
