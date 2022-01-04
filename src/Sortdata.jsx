@@ -145,10 +145,6 @@ export default function sortData(data) {
 
   /*
 
-  CHANGED = OPTIMIZED TABEL
-  NEW ARRAY = FETCH DATA TABELL
-
-  Loopa igenom changed och jämföra med NEW ARRAY om det finns ett billigare pris
   */
   let indexOfChanged = 1;
   products.forEach(({ ValidFrom, ValidUntil }) => {
