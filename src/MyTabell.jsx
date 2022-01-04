@@ -37,12 +37,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
-// DATA 
+// DATA
 function MyTabell() {
   const query = useQuery();
 
   const [products, setProduct] = useState([]);
-
 
   useEffect(() => {
     axios
@@ -52,14 +51,13 @@ function MyTabell() {
         )}`
       )
       .then(({ data }) => {
-        console.log(data);
         setProduct(sortData(data));
       })
       .catch((err) => {
         console.log('err', err);
       });
   }, []);
- // MY TABELL ON THE SCREEN
+  // MY TABELL ON THE SCREEN
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
