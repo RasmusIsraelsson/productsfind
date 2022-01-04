@@ -8,35 +8,35 @@ Trying to find all the cases and sort data correctly
 
 export default function sortData(data) {
   // Saving data into new variable, leaving me with clean data to work with
-  const changed = data.map((value) => value);
+  const products = data.map((value) => value);
 
-  const ORDINARY_PRODUCT_OFFER = changed[0];
+  const ORDINARY_PRODUCT_OFFER = products[0];
 
   // Edge case: No need to sort data with one or less elements.
-  if (changed.length <= 1) {
-    changed[0].ValidUntil = '';
-    return changed;
+  if (products.length <= 1) {
+    products[0].ValidUntil = '';
+    return products;
   }
 
   // Set pure nulls
-  changed.forEach((element, index) => {
+  products.forEach((element, index) => {
     if (element.ValidFrom === 'NULL') {
-      changed[index].ValidFrom = null;
+      products[index].ValidFrom = null;
     }
     if (element.ValidUntil === 'NULL') {
-      changed[index].ValidUntil = null;
+      products[index].ValidUntil = null;
     }
   });
 
   let index = 0;
 
-  for (let element of changed) {
+  for (let element of products) {
     const productOfferA = {};
     Object.assign(productOfferA, element);
     const indexB = index + 1;
 
     // Grab productOfferB if not out of bounds..
-    const productOfferB = indexB < changed.length ? changed[indexB] : null;
+    const productOfferB = indexB < products.length ? products[indexB] : null;
 
     if (productOfferB === null) {
       // Edge Case: Missing price for todays date..
@@ -48,7 +48,7 @@ export default function sortData(data) {
       addOrdinaryOffer.ValidFrom = productOfferA.ValidUntil;
       addOrdinaryOffer.ValidUntil = '';
 
-      changed.push(addOrdinaryOffer);
+      products.push(addOrdinaryOffer);
       break;
     }
 
@@ -62,11 +62,11 @@ export default function sortData(data) {
     if (dateAEnd > dateBStart) {
       productOfferA.ValidUntil = productOfferB.ValidFrom;
 
-      changed[index] = productOfferA;
+      products[index] = productOfferA;
     } else if (productOfferA.ValidUntil === null) {
       // Case 2: Missing end date...
       productOfferA.ValidUntil = productOfferB.ValidFrom;
-      changed[index] = productOfferA;
+      products[index] = productOfferA;
     } else if (dateAEnd < dateBStart) {
       // Case 3: Missing ordinary price between dates...
 
@@ -79,7 +79,7 @@ export default function sortData(data) {
       addOrdinaryOffer.ValidFrom = productOfferA.ValidUntil;
       addOrdinaryOffer.ValidUntil = productOfferB.ValidFrom;
 
-      changed.splice(indexB, 0, addOrdinaryOffer);
+      products.splice(indexB, 0, addOrdinaryOffer);
     }
 
     index++;
@@ -99,7 +99,7 @@ export default function sortData(data) {
     return a > b ? a : b;
   });
 
-  const lastInArray = changed[changed.length - 1];
+  const lastInArray = products[products.length - 1];
   let dateOfHighest = '';
 
   data.forEach((element) => {
@@ -109,10 +109,10 @@ export default function sortData(data) {
   });
 
   if (max > new Date(lastInArray.ValidFrom)) {
-    changed[changed.length - 1].ValidUntil = dateOfHighest;
+    products[products.length - 1].ValidUntil = dateOfHighest;
   }
 
-  const compareDate = new Date(changed[changed.length - 1].ValidUntil);
+  const compareDate = new Date(products[products.length - 1].ValidUntil);
   // ONE LAST
   if (compareDate.getTime() === max.getTime()) {
     const addOrdinaryOffer = {};
@@ -120,7 +120,7 @@ export default function sortData(data) {
     addOrdinaryOffer.ValidFrom = dateOfHighest;
     addOrdinaryOffer.ValidUntil = '';
 
-    changed.push(addOrdinaryOffer);
+    products.push(addOrdinaryOffer);
   }
 
   /*
@@ -130,14 +130,14 @@ export default function sortData(data) {
   */
 
   // New array for comaparing
-  const newArray = [];
+  const correctPrices = [];
   data.forEach(({ ValidFrom, ValidUntil, UnitPrice }) =>
-    newArray.push({ ValidFrom, ValidUntil, UnitPrice })
+    correctPrices.push({ ValidFrom, ValidUntil, UnitPrice })
   );
 
   //setting NULL to date to make easier to compare
 
-  newArray.forEach((element) => {
+  correctPrices.forEach((element) => {
     if (element.ValidUntil === null) {
       element.ValidUntil = '2999-12-31 00:00:00.0000000';
     }
@@ -151,21 +151,21 @@ export default function sortData(data) {
   Loopa igenom changed och jämföra med NEW ARRAY om det finns ett billigare pris
   */
   let indexOfChanged = 1;
-  changed.forEach(({ ValidFrom, ValidUntil }) => {
-    newArray.forEach((e) => {
+  products.forEach(({ ValidFrom, ValidUntil }) => {
+    correctPrices.forEach((e) => {
       if (
         new Date(e.ValidFrom) <= new Date(ValidFrom) &&
         new Date(e.ValidUntil) >= new Date(ValidFrom) &&
         new Date(e.ValidFrom) <= new Date(ValidUntil) &&
         new Date(e.ValidUntil) >= new Date(ValidUntil)
       ) {
-        if (e.UnitPrice <= changed[indexOfChanged - 1].UnitPrice) {
-          changed[indexOfChanged - 1].UnitPrice = e.UnitPrice;
+        if (e.UnitPrice <= products[indexOfChanged - 1].UnitPrice) {
+          products[indexOfChanged - 1].UnitPrice = e.UnitPrice;
         }
       }
     });
     indexOfChanged++;
   });
 
-  return changed;
+  return products;
 }
