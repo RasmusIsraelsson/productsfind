@@ -10,6 +10,7 @@ export default function sortData(data) {
   // Saving data into new variable, leaving me with clean data to work with
   const products = data.map((value) => value);
 
+  // Sorting data
   products.sort(function (a, b) {
     return parseFloat(a.PriceValueId) - parseFloat(b.PriceValueId);
   });
@@ -40,6 +41,7 @@ export default function sortData(data) {
     const indexB = index + 1;
 
     // Grab productOfferB if not out of bounds..
+
     const productOfferB = indexB < products.length ? products[indexB] : null;
 
     if (productOfferB === null) {
@@ -50,7 +52,7 @@ export default function sortData(data) {
       const addOrdinaryOffer = {};
       Object.assign(addOrdinaryOffer, ORDINARY_PRODUCT_OFFER);
       addOrdinaryOffer.ValidFrom = productOfferA.ValidUntil;
-      addOrdinaryOffer.ValidUntil = '';
+      addOrdinaryOffer.ValidUntil = '9999-12-31 23:59:59.0000000';
 
       products.push(addOrdinaryOffer);
       break;
@@ -88,8 +90,14 @@ export default function sortData(data) {
 
     index++;
   }
+  /*
+//
+///
+// ADDING CORRECT AMOUNT OF FIELDS
+//
+///
+*/
 
-  // ADDING CORRECT AMOUNT OF FIELDS
   const lastDate = [];
   data.forEach((product) => {
     if (product.ValidUntil === '') {
@@ -122,43 +130,45 @@ export default function sortData(data) {
     const addOrdinaryOffer = {};
     Object.assign(addOrdinaryOffer, ORDINARY_PRODUCT_OFFER);
     addOrdinaryOffer.ValidFrom = dateOfHighest;
-    addOrdinaryOffer.ValidUntil = '';
+    addOrdinaryOffer.ValidUntil = '9999-12-31 23:59:59.0000000';
 
     products.push(addOrdinaryOffer);
   }
 
   /*
   //
+  //
    CHECKING PRICES
   //
+  ///
   */
 
-  // New array for comaparing
+  //New array for comaparing
   const correctPrices = [];
   data.forEach(({ ValidFrom, ValidUntil, UnitPrice }) =>
     correctPrices.push({ ValidFrom, ValidUntil, UnitPrice })
   );
 
-  //setting NULL to date to make easier to compare
+  //setting NULL to date to compare
 
-  correctPrices.forEach((element) => {
-    if (element.ValidUntil === null) {
-      element.ValidUntil = '2999-12-31 00:00:00.0000000';
+  correctPrices.forEach((e) => {
+    if (e.ValidUntil === null) {
+      e.ValidUntil = '9999-12-31 00:00:00.0000000';
     }
   });
 
   /*
-
+Checking ever price 
   */
   let indexOfChanged = 1;
   products.forEach(({ ValidFrom, ValidUntil }) => {
+    // Taking the cheapest price
     correctPrices.forEach((e) => {
       if (
         new Date(e.ValidFrom) <= new Date(ValidFrom) &&
-        new Date(e.ValidUntil) >= new Date(ValidFrom) &&
-        new Date(e.ValidFrom) <= new Date(ValidUntil) &&
         new Date(e.ValidUntil) >= new Date(ValidUntil)
       ) {
+        // if prices is cheaper asign it
         if (e.UnitPrice <= products[indexOfChanged - 1].UnitPrice) {
           products[indexOfChanged - 1].UnitPrice = e.UnitPrice;
         }
@@ -166,6 +176,34 @@ export default function sortData(data) {
     });
     indexOfChanged++;
   });
+
+  /*
+//
+//
+Deleting doublets
+//
+//
+  */
+
+  // Premise: All data is sorted in correct ascending date intervals
+  for (let index = 0; index < products.length; index++) {
+    if (index > 0) {
+      const elem = products[index];
+      const prevIndex = index - 1;
+      const prevElem = products[prevIndex];
+
+      if (elem.UnitPrice === prevElem.UnitPrice) {
+        // Adjust dates on current elem:
+        elem.ValidFrom = prevElem.ValidFrom;
+
+        // Remove previous element
+        products.splice(prevIndex, 1);
+
+        // Go back 1 in index:
+        index--;
+      }
+    }
+  }
 
   return products;
 }
