@@ -10,6 +10,10 @@ export default function sortData(data) {
   // Saving data into new variable, leaving me with clean data to work with
   const products = data.map((value) => value);
 
+  products.sort(function (a, b) {
+    return parseFloat(a.PriceValueId) - parseFloat(b.PriceValueId);
+  });
+
   const ORDINARY_PRODUCT_OFFER = products[0];
 
   // Edge case: No need to sort data with one or less elements.
