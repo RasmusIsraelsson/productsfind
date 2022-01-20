@@ -38,6 +38,11 @@ src
 4. Kör `npm i` för att installera alla programmets dependencies
 5. Kör `npm start` för att köra programmet
 
+### Pages
+
+`/?catnr=[CatalogEntryCode]`<br>
+Denna sida visar en produkts prishistoria efter en specifierad CatalogEntryCode
+
 ### Kontakt:
 
 Om ni har några frågor kan ni alltid nå mig på rasmus.israelsson1@gmail.com
