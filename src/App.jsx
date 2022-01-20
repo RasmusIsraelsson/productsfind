@@ -1,6 +1,6 @@
 import React from 'react';
 
-import MyTabell from './MyTabell';
+import MyTable from './MyTable';
 import {
   BrowserRouter as Router,
   Routes,
@@ -16,7 +16,7 @@ function App() {
           path="/"
           element={
             <div>
-              <MyTabell />
+              <MyTable />
             </div>
           }
         />

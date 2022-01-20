@@ -8,20 +8,20 @@ Trying to find all the cases and sort data correctly
 
 export default function sortData(data) {
   // Saving data into new variable, leaving me with clean data to work with
-  const products = data.map((value) => value);
-
-  // Sorting data
-  products.sort(function (a, b) {
-    return parseFloat(a.PriceValueId) - parseFloat(b.PriceValueId);
-  });
-
-  const ORDINARY_PRODUCT_OFFER = products[0];
+  const products = [...data];
 
   // Edge case: No need to sort data with one or less elements.
   if (products.length <= 1) {
     products[0].ValidUntil = '';
     return products;
   }
+
+  // Sorting data by ascending number of PriceValueId
+  products.sort(function (a, b) {
+    return parseFloat(a.PriceValueId) - parseFloat(b.PriceValueId);
+  });
+
+  const ORDINARY_PRODUCT_OFFER = products[0];
 
   // Set pure nulls
   products.forEach((element, index) => {

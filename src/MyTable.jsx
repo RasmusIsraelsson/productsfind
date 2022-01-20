@@ -38,7 +38,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 // DATA
-function MyTabell() {
+function MyTable() {
   const query = useQuery();
 
   const [products, setProduct] = useState([]);
@@ -46,7 +46,7 @@ function MyTabell() {
   useEffect(() => {
     axios
       .get(
-        `https://arbetspserver.herokuapp.com/database-find/${query.get(
+        `https://arbetsprovserver.herokuapp.com/database-find/${query.get(
           'catnr'
         )}`
       )
@@ -57,7 +57,7 @@ function MyTabell() {
         console.log('err', err);
       });
   }, []);
-  // MY TABELL ON THE SCREEN
+  // MY TABLE ON THE SCREEN
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -92,4 +92,4 @@ function MyTabell() {
   );
 }
 
-export default MyTabell;
+export default MyTable;
